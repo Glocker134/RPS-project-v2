@@ -3,7 +3,7 @@ function computerPlay() {
 }
 
 function playRound(player, computer) {
-    switch(true) {
+    switch (true) {
         case (player == plays[0] && computer == plays[2]):
         case (player == plays[1] && computer == plays[0]):
         case (player == plays[2] && computer == plays[1]):
@@ -14,48 +14,72 @@ function playRound(player, computer) {
             break;
         default:
             return 0;
-        }
+    }
 }
 
 function resultUpdate(key, player, computer) {
-    const parent = document.querySelector("#results-area");
-    //const rep = document.getElementById("game-log");
-    const para = document.createElement("p");
-    //para.setAttribute("id", "game-log");
-    let node;
-    switch(key) {
-        case 0: node = document.createTextNode(`You lose! ${computer} beats ${player}!`);
-                break;
-        case 1: node = document.createTextNode(`You win! ${player} beats ${computer}!`);
-                break;
-        case 2: node = document.createTextNode(`Draw! Both players selected ${player}`);
+    const para = document.getElementById("game-log");
+    switch (key) {
+        case 0:
+            para.textContent = `You lose! ${computer} beats ${player}!`;
+            break;
+        case 1:
+            para.textContent = `You win! ${player} beats ${computer}!`
+            break;
+        case 2:
+            para.textContent = `Draw! Both players selected ${player}`;
     }
-    para.appendChild(node);
-    //rep.replaceWith(para);
-    parent.replaceChild(para, parent.firstChild);
 }
+
+function updateComputerScore(score) {
+    const para = document.getElementById("computer-score");
+    para.textContent = score;
+}
+
+function updatePlayerScore(score) {
+    const para = document.getElementById("player-score");
+    para.textContent = score;
+}
+
+function endGame() {
+    let para = document.getElementById("win-msg");
+    if (playerScore == 3) {
+        para.textContent = "You win! You have bested the computer in 3 games! Please refresh the window."
+    } else if (computerScore == 3) {
+        para.textContent = "You lose! The computer has won 3 games! Try again next time! Please refresh the window."
+    }
+    document.getElementById("ROCK").disabled = true;
+    document.getElementById("PAPER").disabled = true;
+    document.getElementById("SCISSORS").disabled = true;
+}
+
 
 function gameRound() {
     let computerSelection = computerPlay();
-    switch(playRound(this.id, computerSelection)) {
-        case 0: resultUpdate(0, this.id, computerSelection);
-                break;   
-                //console.log(`You lose! ${computerSelection} beats ${this.id}!`);
-                //break;
-        case 1: resultUpdate(1, this.id, computerSelection);
-                break;   
-        case 2: resultUpdate(2, this.id, computerSelection);
+    switch (playRound(this.id, computerSelection)) {
+        case 0:
+            resultUpdate(0, this.id, computerSelection);
+            computerScore++;
+            updateComputerScore(computerScore);
+            break;
+        case 1:
+            resultUpdate(1, this.id, computerSelection);
+            playerScore++;
+            updatePlayerScore(playerScore);
+            break;
+        case 2:
+            resultUpdate(2, this.id, computerSelection);
     }
+    if (playerScore == 3 || computerScore == 3) endGame();
 };
 
+const plays = ["ROCK", "PAPER", "SCISSORS"];
+let playerScore = 0;
+let computerScore = 0;
 let buttons = document.getElementsByClassName("button");
-for (let i = 0; i < buttons.length; i++){
+for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("click", gameRound);
 }
-
-
-const plays = ["ROCK", "PAPER", "SCISSORS"];
-
 
 
 /*
